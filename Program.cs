@@ -28,19 +28,18 @@ namespace AveBusManager
             aveBusController.openSerialPort();
             Console.WriteLine("Successfully estabilished connection with AveBus.\n");
 
-            Console.WriteLine("Starting CLI...");
-            Console.WriteLine("Press UP and DOWN arrows + ENTER to perform selection");
-            Console.WriteLine("Press ESC to exit.");
-
-            System.Threading.Thread.Sleep(1500);
-
-
-
             // application start ======================================================
 
             if (args.Length > 0 && args.Contains("--cli"))
             {
                 // starts CLI
+
+                Console.WriteLine("Starting CLI...");
+                Console.WriteLine("Press UP and DOWN arrows + ENTER to perform selection");
+                Console.WriteLine("Press ESC to exit.");
+
+                System.Threading.Thread.Sleep(1500);
+
                 CLI cli = new CLI(aveBusController);
                 cli.startCLI();
             } else
