@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO.Ports;
 
 namespace AveBusManager
@@ -13,6 +10,9 @@ namespace AveBusManager
 
         static void Main(string[] args)
         {
+
+
+            // port setup =============================================================
 
             AveBusController aveBusController = new AveBusController();
 
@@ -34,10 +34,19 @@ namespace AveBusManager
 
             System.Threading.Thread.Sleep(1500);
 
+
+
+            // application start ======================================================
+
             if (args.Length > 0 && args.Contains("--cli"))
             {
+                // starts CLI
                 CLI cli = new CLI(aveBusController);
                 cli.startCLI();
+            } else
+            {
+                // starts GUI
+
             }
 
         }
