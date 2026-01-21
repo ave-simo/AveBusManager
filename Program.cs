@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO.Ports;
+using System.Windows.Forms;
 
 namespace AveBusManager
 {
@@ -14,28 +12,38 @@ namespace AveBusManager
         static void Main(string[] args)
         {
 
-            AveBusController aveBusController = new AveBusController();
+            if (args.Length > 0 && args.Contains("--cli"))
+            {
+                // starts CLI
+                AveBusController aveBusController = new AveBusController();
 
-            aveBusController.configureSerialPort(
-                PORT,
-                4800,
-                Parity.Odd,
-                8,
-                StopBits.One,
-                Handshake.None
-            );
+                aveBusController.configureSerialPort(
+                    PORT,
+                    4800,
+                    Parity.Odd,
+                    8,
+                    StopBits.One,
+                    Handshake.None
+                );
 
-            aveBusController.openSerialPort();
-            Console.WriteLine("Successfully estabilished connection with AveBus.\n");
+                aveBusController.openSerialPort();
+                Console.WriteLine("Successfully estabilished connection with AveBus.\n");
 
-            Console.WriteLine("Starting CLI...");
-            Console.WriteLine("Press UP and DOWN arrows + ENTER to perform selection");
-            Console.WriteLine("Press ESC to exit.");
+                Console.WriteLine("Starting CLI...");
+                Console.WriteLine("Press UP and DOWN arrows + ENTER to perform selection");
+                Console.WriteLine("Press ESC to exit.");
 
-            System.Threading.Thread.Sleep(1500);
+                System.Threading.Thread.Sleep(1500);
 
-            //CLI cli = new CLI(aveBusController);
-            //cli.startCLI();
+                CLI cli = new CLI(aveBusController);
+                cli.startCLI();
+            } else
+            {
+                // starts GUI
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new MainForm());
+            }
 
         }
     }
