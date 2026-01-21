@@ -34,8 +34,11 @@ namespace AveBusManager
 
             System.Threading.Thread.Sleep(1500);
 
-            //CLI cli = new CLI(aveBusController);
-            //cli.startCLI();
+            if (args.Length > 0 && args.Contains("--cli"))
+            {
+                CLI cli = new CLI(aveBusController);
+                cli.startCLI();
+            }
 
         }
     }
