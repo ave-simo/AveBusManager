@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.IO.Ports;
+using System.Windows.Forms;
 
 namespace AveBusManager
 {
@@ -11,28 +12,22 @@ namespace AveBusManager
         static void Main(string[] args)
         {
 
-
-            // port setup =============================================================
-
-            AveBusController aveBusController = new AveBusController();
-
-            aveBusController.configureSerialPort(
-                PORT,
-                4800,
-                Parity.Odd,
-                8,
-                StopBits.One,
-                Handshake.None
-            );
-
-            aveBusController.openSerialPort();
-            Console.WriteLine("Successfully estabilished connection with AveBus.\n");
-
-            // application start ======================================================
-
             if (args.Length > 0 && args.Contains("--cli"))
             {
                 // starts CLI
+                AveBusController aveBusController = new AveBusController();
+
+                aveBusController.configureSerialPort(
+                    PORT,
+                    4800,
+                    Parity.Odd,
+                    8,
+                    StopBits.One,
+                    Handshake.None
+                );
+
+                aveBusController.openSerialPort();
+                Console.WriteLine("Successfully estabilished connection with AveBus.\n");
 
                 Console.WriteLine("Starting CLI...");
                 Console.WriteLine("Press UP and DOWN arrows + ENTER to perform selection");
@@ -45,7 +40,9 @@ namespace AveBusManager
             } else
             {
                 // starts GUI
-
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new MainForm());
             }
 
         }

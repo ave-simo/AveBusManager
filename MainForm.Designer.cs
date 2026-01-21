@@ -35,15 +35,15 @@
             this.label1 = new System.Windows.Forms.Label();
             this.lightStatus_var = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.button4 = new System.Windows.Forms.Button();
             this.stopBits_var = new System.Windows.Forms.Label();
             this.dataBits_var = new System.Windows.Forms.Label();
-            this.baud_var = new System.Windows.Forms.Label();
             this.parity_var = new System.Windows.Forms.Label();
+            this.baud_var = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.button4 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -87,7 +87,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(67, 205);
+            this.label1.Location = new System.Drawing.Point(53, 185);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(75, 13);
             this.label1.TabIndex = 4;
@@ -97,7 +97,7 @@
             // lightStatus_var
             // 
             this.lightStatus_var.AutoSize = true;
-            this.lightStatus_var.Location = new System.Drawing.Point(240, 205);
+            this.lightStatus_var.Location = new System.Drawing.Point(234, 185);
             this.lightStatus_var.Name = "lightStatus_var";
             this.lightStatus_var.Size = new System.Drawing.Size(25, 13);
             this.lightStatus_var.TabIndex = 5;
@@ -120,51 +120,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "COM Settings";
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 25);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(56, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Baud rate:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 54);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(36, 13);
-            this.label4.TabIndex = 1;
-            this.label4.Text = "Parity:";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 83);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(52, 13);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "Data bits:";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 112);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(51, 13);
-            this.label6.TabIndex = 3;
-            this.label6.Text = "Stop bits:";
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(12, 146);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(154, 23);
-            this.button4.TabIndex = 7;
-            this.button4.Text = "not implemented";
-            this.button4.UseVisualStyleBackColor = true;
-            // 
             // stopBits_var
             // 
             this.stopBits_var.AutoSize = true;
@@ -185,16 +140,6 @@
             this.dataBits_var.Text = "abc";
             this.dataBits_var.Click += new System.EventHandler(this.label8_Click);
             // 
-            // baud_var
-            // 
-            this.baud_var.AutoSize = true;
-            this.baud_var.Location = new System.Drawing.Point(86, 25);
-            this.baud_var.Name = "baud_var";
-            this.baud_var.Size = new System.Drawing.Size(25, 13);
-            this.baud_var.TabIndex = 4;
-            this.baud_var.Text = "abc";
-            this.baud_var.Click += new System.EventHandler(this.label10_Click);
-            // 
             // parity_var
             // 
             this.parity_var.AutoSize = true;
@@ -205,11 +150,66 @@
             this.parity_var.Text = "abc";
             this.parity_var.Click += new System.EventHandler(this.label9_Click);
             // 
+            // baud_var
+            // 
+            this.baud_var.AutoSize = true;
+            this.baud_var.Location = new System.Drawing.Point(86, 25);
+            this.baud_var.Name = "baud_var";
+            this.baud_var.Size = new System.Drawing.Size(25, 13);
+            this.baud_var.TabIndex = 4;
+            this.baud_var.Text = "abc";
+            this.baud_var.Click += new System.EventHandler(this.label10_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 112);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(51, 13);
+            this.label6.TabIndex = 3;
+            this.label6.Text = "Stop bits:";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 83);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(52, 13);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "Data bits:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 54);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(36, 13);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "Parity:";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 25);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(56, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Baud rate:";
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(12, 146);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(154, 23);
+            this.button4.TabIndex = 7;
+            this.button4.Text = "not implemented";
+            this.button4.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(339, 243);
+            this.ClientSize = new System.Drawing.Size(339, 209);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.lightStatus_var);
