@@ -5,31 +5,24 @@ namespace AveBusManager
 {
     internal class AveBusController
     {
-        private string[] availablePorts;
-        private SerialPort serialPort;
+        private SerialPort serialPort = new SerialPort();
 
         private static byte[] CHANGE_LIGHT_STATUS_FRAME_COMMAND = new byte[] { 0x40, 0x07, 0x27, 0x27, 0x4E, 0x02, 0xFA, 0xEA };
         private static byte[] TURN_ON_LIGHT_1_FRAME_COMMAND     = new byte[] { 0x40, 0x07, 0x27, 0x27, 0x4E, 0x01, 0xFA, 0xE9 };
         private static byte[] TURN_OFF_LIGHT_1_FRAME_COMMAND    = new byte[] { 0x40, 0x07, 0x27, 0x27, 0x4E, 0x03, 0xFA, 0xEB };
 
-        public AveBusController()
+
+
+        // ==============================================================
+        // methods to interact with ports
+        public SerialPort getSerialPort()
         {
-            availablePorts = SerialPort.GetPortNames();
-            serialPort = new SerialPort();
+            return serialPort;
         }
         public string[] getAvailablePorts()
         {
-            return this.availablePorts;
+            return SerialPort.GetPortNames();
         }
-        public void printAvailablePorts()
-        {
-            foreach (string port in availablePorts) {
-                Console.WriteLine(port);
-            }
-        }
-
-
-
         public void configureSerialPort(string portName, int baudRate, Parity parity, sbyte databits, StopBits stopBits, Handshake handShake)
         {
             try
@@ -66,35 +59,12 @@ namespace AveBusManager
             }
             
         }
-        private byte[] bitwiseNot(byte[] command)
-        {
-            byte[] bitwiseInvertedCommand = new byte[command.Length];
 
-            for (int i = 0; i < command.Length; i++)
-            {
-                bitwiseInvertedCommand[i] = (byte)~command[i];
-            }
-            return bitwiseInvertedCommand;
-        }
-        private void sendCommand(byte[] command)
-        {
-            try
-            {
-                serialPort.Write(bitwiseNot(command), 0, command.Length);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Something went wrong. Error: \n");
-                Console.WriteLine(ex.Message);
-                return;
-            }
 
-        }
 
         // ==============================================================
-        // actual commands which interacts with avebus
-        // TODO: add checks...
-
+        // methods to interact with avebus
+        // (add here your new methods)
         public void changeLight1Status() 
         { 
             sendCommand(CHANGE_LIGHT_STATUS_FRAME_COMMAND);
@@ -111,10 +81,31 @@ namespace AveBusManager
             sendCommand(TURN_OFF_LIGHT_1_FRAME_COMMAND);
             Console.WriteLine("command [TURN_OFF_LIGHT_1_FRAME_COMMAND] sent.");
         }
-        public void otherCommand()
+        private byte[] bitwiseNot(byte[] command)
         {
-            // sendCommand( il tuo comando qui );
-            Console.WriteLine("non implementato");
+            byte[] bitwiseInvertedCommand = new byte[command.Length];
+
+            for (int i = 0; i < command.Length; i++)
+            {
+                bitwiseInvertedCommand[i] = (byte)~command[i];
+            }
+            return bitwiseInvertedCommand;
+        }
+
+        // actually send frame in AveBus
+        private void sendCommand(byte[] command)
+        {
+            try
+            {
+                serialPort.Write(bitwiseNot(command), 0, command.Length);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Something went wrong. Error: \n");
+                Console.WriteLine(ex.Message);
+                return;
+            }
+
         }
 
     }
