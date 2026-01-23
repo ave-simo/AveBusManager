@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AveBusReader.cs" />
     <Compile Include="CLI.cs" />
     <Compile Include="AveBusController.cs" />
     <Compile Include="MainForm.cs">

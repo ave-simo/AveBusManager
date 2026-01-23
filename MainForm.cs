@@ -80,8 +80,5 @@ namespace AveBusManager
             aveBusController.turnOffLight_1();
         }
 
-        // =========================================================
-        // labels section
-
     }
 }
