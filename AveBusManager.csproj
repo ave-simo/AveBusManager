@@ -48,13 +48,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AveBusReader.cs" />
-    <Compile Include="CLI.cs" />
-    <Compile Include="AveBusController.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="Handlers\GuiEventHandler.cs" />
+    <Compile Include="Guis\CLI.cs" />
+    <Compile Include="Controllers\AveBusController.cs" />
+    <Compile Include="Guis\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="Guis\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
@@ -64,7 +64,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Guis\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

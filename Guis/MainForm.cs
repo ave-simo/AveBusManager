@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO.Ports;
 using System.Windows.Forms;
 
@@ -8,11 +9,18 @@ namespace AveBusManager
     {
 
         private AveBusController aveBusController;
+        private GuiEventHandler guiEventHandler;
 
         public MainForm()
         {
             InitializeComponent();
+
             this.aveBusController = new AveBusController();
+            guiEventHandler = new GuiEventHandler(this);
+            aveBusController.onBusEvent += guiEventHandler.guiUpdate;
+
+            disableAllButtons();
+
         }
 
         // useless =================================================
@@ -61,12 +69,32 @@ namespace AveBusManager
             dataBits_var.Text = aveBusController.getSerialPort().DataBits.ToString();
             stopBits_var.Text = aveBusController.getSerialPort().StopBits.ToString();
 
+            enableAllButtons();
+
         }
 
 
 
         // =========================================================
         // buttons section
+
+        private void enableAllButtons()
+        {
+            button1.Enabled = true;
+            button2.Enabled = true;
+            button3.Enabled = true;
+            startReading_btn.Enabled = true;
+            stopReading_btn.Enabled = true;
+        }
+
+        private void disableAllButtons()
+        {
+            button1.Enabled = false;
+            button2.Enabled = false;
+            button3.Enabled = false;
+            startReading_btn.Enabled = false;
+            stopReading_btn.Enabled = false;
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             aveBusController.changeLight1Status();
@@ -78,6 +106,27 @@ namespace AveBusManager
         private void button3_Click(object sender, EventArgs e)
         {
             aveBusController.turnOffLight_1();
+        }
+        private void button5_Click(object sender, EventArgs e)
+        {
+            aveBusController.startReading();
+        }
+        private void button6_Click(object sender, EventArgs e)
+        {
+            aveBusController.stopReading();
+        }
+
+
+
+        public void changeLight1StatusColor(string color)
+        {
+            if (color.Equals("yellow")) light_1_statusTextBox.BackColor = Color.Yellow;
+            if (color.Equals("black"))  light_1_statusTextBox.BackColor = Color.Black;
+
+        }
+        public void AppendLog(string text)
+        {
+            textBox1.AppendText(text + " ");
         }
 
     }
