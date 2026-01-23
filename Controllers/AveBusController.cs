@@ -1,11 +1,15 @@
 ﻿using System;
 using System.IO.Ports;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace AveBusManager
 {
     internal class AveBusController
     {
         private SerialPort serialPort = new SerialPort();
+        private bool read = false;
+        private Thread readThread;
 
         // TODO: spostare in una classe enum che contenga solamente comandi
         private static byte[] CHANGE_LIGHT_STATUS_FRAME_COMMAND = new byte[] { 0x40, 0x07, 0x27, 0x27, 0x4E, 0x02, 0xFA, 0xEA };
@@ -13,13 +17,17 @@ namespace AveBusManager
         private static byte[] TURN_OFF_LIGHT_1_FRAME_COMMAND    = new byte[] { 0x40, 0x07, 0x27, 0x27, 0x4E, 0x03, 0xFA, 0xEB };
 
 
-
         // ==============================================================
-        // methods to interact with ports
+        // getters and setters
         public SerialPort getSerialPort()
         {
             return serialPort;
         }
+
+
+
+        // ==============================================================
+        // methods to interact with ports
         public string[] getAvailablePorts()
         {
             return SerialPort.GetPortNames();
@@ -64,7 +72,7 @@ namespace AveBusManager
 
 
         // ==============================================================
-        // methods to interact with avebus
+        // methods to write in avebus
         // (add here your new methods)
         public void changeLight1Status() 
         { 
@@ -107,6 +115,55 @@ namespace AveBusManager
                 return;
             }
 
+        }
+
+
+
+        // ==============================================================
+        // methods to read from avebus
+        /*
+         * - leggere da bus (loop di lettura)
+         * - decodificare i messaggi che transitano
+         * - notificare la gui quando c'è un cambio di stato che ci interessa
+         */
+
+        public void startReading()
+        {
+
+            if (readThread != null && readThread.IsAlive) return; // evita doppio start
+
+            read = true;
+            readThread = new Thread(readLoop);
+            readThread.IsBackground = true; // chiude il thread quando chiude l'app
+            readThread.Start();
+            Console.WriteLine("started reading");
+        }
+
+        public void stopReading()
+        {
+            this.read = false;
+            Console.WriteLine("stopped reading");
+        }
+
+        private void readLoop()
+        {
+            while (read)
+            {
+                if (serialPort.BytesToRead > 0) // evita la stampa di valori vuoti
+                {
+                    string readedBytes = serialPort.BytesToRead.ToString("X2");
+                    Console.WriteLine(readedBytes);
+                }
+
+                Thread.Sleep(100);
+            }
+            
+        }
+
+        private string dedcodeFrames()
+        {
+            //TODO
+            return null;
         }
 
     }

@@ -8,11 +8,15 @@ namespace AveBusManager
     {
 
         private AveBusController aveBusController;
+        private LogForm busListenerForm;
 
         public MainForm()
         {
             InitializeComponent();
+
             this.aveBusController = new AveBusController();
+            disableAllButtons();
+
         }
 
         // useless =================================================
@@ -55,6 +59,8 @@ namespace AveBusManager
             aveBusController.openSerialPort();
             MessageBox.Show("Successfully configured COM port", "Status");
 
+            enableAllButtons();
+
             // update labels
             baud_var.Text = aveBusController.getSerialPort().BaudRate.ToString();
             parity_var.Text = aveBusController.getSerialPort().Parity.ToString();
@@ -78,6 +84,39 @@ namespace AveBusManager
         private void button3_Click(object sender, EventArgs e)
         {
             aveBusController.turnOffLight_1();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            busListenerForm = new LogForm();
+            busListenerForm.Show();
+
+            aveBusController.startReading();   
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            aveBusController.stopReading();
+            busListenerForm.Hide();
+        }
+
+
+        private void enableAllButtons()
+        {
+            button1.Enabled = true;
+            button2.Enabled = true;
+            button3.Enabled = true;
+            startReading_btn.Enabled = true;
+            stopReading_btn.Enabled = true;
+        }
+
+        private void disableAllButtons()
+        {
+            button1.Enabled = false;
+            button2.Enabled = false;
+            button3.Enabled = false;
+            startReading_btn.Enabled = false;
+            stopReading_btn.Enabled = false;
         }
 
     }

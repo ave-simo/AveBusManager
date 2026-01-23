@@ -7,7 +7,7 @@ namespace AveBusManager
 {
     internal class Program
     {
-        static string PORT = "COM3";
+        static string PORT = "COM3"; // default port for cli interface
         
 
         static void Main(string[] args)
