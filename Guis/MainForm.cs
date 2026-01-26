@@ -101,11 +101,22 @@ namespace AveBusManager
         {
             aveBusController.stopReadingBus();
         }
+        private void button4_Click(object sender, EventArgs e)
+        {
+            aveBusController.turnOnLight_2();
+        }
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+            aveBusController.turnOffLight_2();
+        }
+
         private void enableAllButtons()
         {
             button1.Enabled = true;
             button2.Enabled = true;
             button3.Enabled = true;
+            button4.Enabled = true;
+            button5.Enabled = true;
             startReading_btn.Enabled = true;
             stopReading_btn.Enabled = true;
         }
@@ -114,6 +125,8 @@ namespace AveBusManager
             button1.Enabled = false;
             button2.Enabled = false;
             button3.Enabled = false;
+            button4.Enabled = false;
+            button5.Enabled = false;
             startReading_btn.Enabled = false;
             stopReading_btn.Enabled = false;
         }
@@ -122,6 +135,12 @@ namespace AveBusManager
         {
             if (color.Equals("yellow")) light_1_statusTextBox.BackColor = Color.Yellow;
             if (color.Equals("black"))  light_1_statusTextBox.BackColor = Color.Black;
+
+        }
+        public void changeLight2StatusColor(string color)
+        {
+            if (color.Equals("yellow")) light_2_statusTextBox.BackColor = Color.Yellow;
+            if (color.Equals("black"))  light_2_statusTextBox.BackColor = Color.Black;
 
         }
         public void AppendLog(string text)
@@ -138,10 +157,6 @@ namespace AveBusManager
             // other colors...
 
         }
-
-
-
-
 
     }
 }

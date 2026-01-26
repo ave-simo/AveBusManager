@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -44,11 +45,13 @@
             this.startReading_btn = new System.Windows.Forms.Button();
             this.stopReading_btn = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.light_1_statusTextBox = new System.Windows.Forms.TextBox();
-            this.light_2_statusTextBox = new System.Windows.Forms.TextBox();
-            this.luce_1_statusLabel = new System.Windows.Forms.Label();
-            this.luce_2_statusLabel = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.luce_2_statusLabel = new System.Windows.Forms.Label();
+            this.luce_1_statusLabel = new System.Windows.Forms.Label();
+            this.light_2_statusTextBox = new System.Windows.Forms.TextBox();
+            this.light_1_statusTextBox = new System.Windows.Forms.TextBox();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,19 +70,19 @@
             // 
             this.button2.Location = new System.Drawing.Point(12, 88);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(154, 23);
+            this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 1;
-            this.button2.Text = "Turn on light 1";
+            this.button2.Text = "Light 1 ON";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(12, 117);
+            this.button3.Location = new System.Drawing.Point(91, 88);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(154, 23);
+            this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 2;
-            this.button3.Text = "Turn off light 1";
+            this.button3.Text = "Light 1 OFF";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
@@ -185,7 +188,7 @@
             // 
             // startReading_btn
             // 
-            this.startReading_btn.Location = new System.Drawing.Point(12, 151);
+            this.startReading_btn.Location = new System.Drawing.Point(12, 146);
             this.startReading_btn.Name = "startReading_btn";
             this.startReading_btn.Size = new System.Drawing.Size(75, 23);
             this.startReading_btn.TabIndex = 8;
@@ -195,7 +198,7 @@
             // 
             // stopReading_btn
             // 
-            this.stopReading_btn.Location = new System.Drawing.Point(91, 151);
+            this.stopReading_btn.Location = new System.Drawing.Point(91, 146);
             this.stopReading_btn.Name = "stopReading_btn";
             this.stopReading_btn.Size = new System.Drawing.Size(75, 23);
             this.stopReading_btn.TabIndex = 9;
@@ -215,44 +218,6 @@
             this.textBox1.TabIndex = 10;
             this.textBox1.Text = " ";
             // 
-            // light_1_statusTextBox
-            // 
-            this.light_1_statusTextBox.BackColor = System.Drawing.Color.Black;
-            this.light_1_statusTextBox.Location = new System.Drawing.Point(93, 185);
-            this.light_1_statusTextBox.Multiline = true;
-            this.light_1_statusTextBox.Name = "light_1_statusTextBox";
-            this.light_1_statusTextBox.ReadOnly = true;
-            this.light_1_statusTextBox.Size = new System.Drawing.Size(73, 23);
-            this.light_1_statusTextBox.TabIndex = 11;
-            // 
-            // light_2_statusTextBox
-            // 
-            this.light_2_statusTextBox.BackColor = System.Drawing.Color.Black;
-            this.light_2_statusTextBox.Location = new System.Drawing.Point(93, 222);
-            this.light_2_statusTextBox.Multiline = true;
-            this.light_2_statusTextBox.Name = "light_2_statusTextBox";
-            this.light_2_statusTextBox.ReadOnly = true;
-            this.light_2_statusTextBox.Size = new System.Drawing.Size(73, 23);
-            this.light_2_statusTextBox.TabIndex = 12;
-            // 
-            // luce_1_statusLabel
-            // 
-            this.luce_1_statusLabel.AutoSize = true;
-            this.luce_1_statusLabel.Location = new System.Drawing.Point(14, 195);
-            this.luce_1_statusLabel.Name = "luce_1_statusLabel";
-            this.luce_1_statusLabel.Size = new System.Drawing.Size(73, 13);
-            this.luce_1_statusLabel.TabIndex = 13;
-            this.luce_1_statusLabel.Text = "Light 1 status:";
-            // 
-            // luce_2_statusLabel
-            // 
-            this.luce_2_statusLabel.AutoSize = true;
-            this.luce_2_statusLabel.Location = new System.Drawing.Point(14, 232);
-            this.luce_2_statusLabel.Name = "luce_2_statusLabel";
-            this.luce_2_statusLabel.Size = new System.Drawing.Size(73, 13);
-            this.luce_2_statusLabel.TabIndex = 14;
-            this.luce_2_statusLabel.Text = "Light 2 status:";
-            // 
             // groupBox2
             // 
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -263,15 +228,75 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Rent this free space";
             // 
+            // luce_2_statusLabel
+            // 
+            this.luce_2_statusLabel.AutoSize = true;
+            this.luce_2_statusLabel.Location = new System.Drawing.Point(14, 232);
+            this.luce_2_statusLabel.Name = "luce_2_statusLabel";
+            this.luce_2_statusLabel.Size = new System.Drawing.Size(73, 13);
+            this.luce_2_statusLabel.TabIndex = 14;
+            this.luce_2_statusLabel.Text = "Light 2 status:";
+            // 
+            // luce_1_statusLabel
+            // 
+            this.luce_1_statusLabel.AutoSize = true;
+            this.luce_1_statusLabel.Location = new System.Drawing.Point(14, 195);
+            this.luce_1_statusLabel.Name = "luce_1_statusLabel";
+            this.luce_1_statusLabel.Size = new System.Drawing.Size(73, 13);
+            this.luce_1_statusLabel.TabIndex = 13;
+            this.luce_1_statusLabel.Text = "Light 1 status:";
+            // 
+            // light_2_statusTextBox
+            // 
+            this.light_2_statusTextBox.BackColor = System.Drawing.Color.Black;
+            this.light_2_statusTextBox.Location = new System.Drawing.Point(93, 225);
+            this.light_2_statusTextBox.Multiline = true;
+            this.light_2_statusTextBox.Name = "light_2_statusTextBox";
+            this.light_2_statusTextBox.ReadOnly = true;
+            this.light_2_statusTextBox.Size = new System.Drawing.Size(23, 20);
+            this.light_2_statusTextBox.TabIndex = 12;
+            // 
+            // light_1_statusTextBox
+            // 
+            this.light_1_statusTextBox.BackColor = System.Drawing.Color.Black;
+            this.light_1_statusTextBox.Location = new System.Drawing.Point(93, 188);
+            this.light_1_statusTextBox.Multiline = true;
+            this.light_1_statusTextBox.Name = "light_1_statusTextBox";
+            this.light_1_statusTextBox.ReadOnly = true;
+            this.light_1_statusTextBox.Size = new System.Drawing.Size(23, 20);
+            this.light_1_statusTextBox.TabIndex = 11;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(12, 117);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 16;
+            this.button4.Text = "Light 2 ON";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(91, 117);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(75, 23);
+            this.button5.TabIndex = 17;
+            this.button5.Text = "Light 2 OFF";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click_1);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(668, 266);
+            this.Controls.Add(this.button5);
+            this.Controls.Add(this.button4);
+            this.Controls.Add(this.light_2_statusTextBox);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.luce_2_statusLabel);
             this.Controls.Add(this.luce_1_statusLabel);
-            this.Controls.Add(this.light_2_statusTextBox);
             this.Controls.Add(this.light_1_statusTextBox);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.stopReading_btn);
@@ -281,11 +306,13 @@
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "AveBusManager";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -307,10 +334,12 @@
         private System.Windows.Forms.Button startReading_btn;
         private System.Windows.Forms.Button stopReading_btn;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox light_1_statusTextBox;
-        private System.Windows.Forms.TextBox light_2_statusTextBox;
-        private System.Windows.Forms.Label luce_1_statusLabel;
-        private System.Windows.Forms.Label luce_2_statusLabel;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label luce_2_statusLabel;
+        private System.Windows.Forms.Label luce_1_statusLabel;
+        private System.Windows.Forms.TextBox light_2_statusTextBox;
+        private System.Windows.Forms.TextBox light_1_statusTextBox;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
     }
 }

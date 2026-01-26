@@ -31,8 +31,10 @@ namespace AveBusManager
             switch (eventKey)
             {
                 case "LIGHT_STATUS":
-                    if (eventValue.Equals("TURN_ON_LIGHT_1_FRAME_COMMAND")) mainForm.changeLight1StatusColor("yellow");
+                    if (eventValue.Equals("TURN_ON_LIGHT_1_FRAME_COMMAND"))  mainForm.changeLight1StatusColor("yellow");
                     if (eventValue.Equals("TURN_OFF_LIGHT_1_FRAME_COMMAND")) mainForm.changeLight1StatusColor("black");
+                    if (eventValue.Equals("TURN_ON_LIGHT_2_FRAME_COMMAND"))  mainForm.changeLight2StatusColor("yellow");
+                    if (eventValue.Equals("TURN_OFF_LIGHT_2_FRAME_COMMAND")) mainForm.changeLight2StatusColor("black");
                     if (eventValue.Equals("CHANGE_LIGHT_STATUS_FRAME_COMMAND")) {}
                     break;
 

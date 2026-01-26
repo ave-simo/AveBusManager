@@ -19,6 +19,9 @@ namespace AveBusManager
         private static byte[] CHANGE_LIGHT_STATUS_FRAME_COMMAND = new byte[] { 0x40, 0x07, 0x27, 0x27, 0x4E, 0x02, 0xFA, 0xEA };
         private static byte[] TURN_ON_LIGHT_1_FRAME_COMMAND     = new byte[] { 0x40, 0x07, 0x27, 0x27, 0x4E, 0x01, 0xFA, 0xE9 };
         private static byte[] TURN_OFF_LIGHT_1_FRAME_COMMAND    = new byte[] { 0x40, 0x07, 0x27, 0x27, 0x4E, 0x03, 0xFA, 0xEB };
+        private static byte[] TURN_ON_LIGHT_2_FRAME_COMMAND     = new byte[] { 0x40, 0x07, 0x26, 0x26, 0x4E, 0x01, 0xFA, 0xE7 };
+        private static byte[] TURN_OFF_LIGHT_2_FRAME_COMMAND    = new byte[] { 0x40, 0x07, 0x26, 0x26, 0x4E, 0x03, 0xFA, 0xE9 };
+
 
 
         public AveBusController()
@@ -89,7 +92,6 @@ namespace AveBusManager
 
         // ==============================================================
         // methods to write in avebus
-        // (add here your new methods)
         public void changeLight1Status() 
         { 
             sendCommand(CHANGE_LIGHT_STATUS_FRAME_COMMAND);
@@ -105,6 +107,16 @@ namespace AveBusManager
         {
             sendCommand(TURN_OFF_LIGHT_1_FRAME_COMMAND);
             Console.WriteLine("command [TURN_OFF_LIGHT_1_FRAME_COMMAND] sent.");
+        }
+        public void turnOnLight_2()
+        {
+            sendCommand(TURN_ON_LIGHT_2_FRAME_COMMAND);
+            Console.WriteLine("command [TURN_ON_LIGHT_2_FRAME_COMMAND] sent.");
+        }
+        public void turnOffLight_2()
+        {
+            sendCommand(TURN_OFF_LIGHT_2_FRAME_COMMAND);
+            Console.WriteLine("command [TURN_OFF_LIGHT_2_FRAME_COMMAND] sent.");
         }
         private byte[] bitwiseNot(byte[] command)
         {
@@ -229,15 +241,23 @@ namespace AveBusManager
                         busEvent?.Invoke("PRINT_LOG", "[ " + stringa + "]");
                         busEvent?.Invoke("PRINT_LOG", Environment.NewLine);
 
+                        updateLightsIndicators(stringa);
+
                     }
                 }
                 Thread.Sleep(50);
             }
         }
 
-        private void gestisciRicezioneSuSeriale()
+        private void updateLightsIndicators(string message)
         {
+            message = message.Trim();
 
+            if(message.Equals("40 07 27 27 4E 01 FA E9".Trim())) busEvent?.Invoke("LIGHT_STATUS", "TURN_ON_LIGHT_1_FRAME_COMMAND");
+            if(message.Equals("40 07 27 27 4E 03 FA EB".Trim())) busEvent?.Invoke("LIGHT_STATUS", "TURN_OFF_LIGHT_1_FRAME_COMMAND");
+            if(message.Equals("40 07 26 26 4E 01 FA E7".Trim())) busEvent?.Invoke("LIGHT_STATUS", "TURN_ON_LIGHT_2_FRAME_COMMAND");
+            if(message.Equals("40 07 26 26 4E 03 FA E9".Trim())) busEvent?.Invoke("LIGHT_STATUS", "TURN_OFF_LIGHT_2_FRAME_COMMAND");
+            if(message.Equals("40 07 27 27 4E 02 FA EA".Trim())) { }
         }
 
         private void readBusLoopOLD()
