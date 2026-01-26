@@ -22,3 +22,12 @@ Applicazione **WinForms (.NET Framework 4.7.2)** per la gestione e il monitoragg
 
 * **GUI**: avvio standard dell’eseguibile
 * **CLI**: avviare con parametro `--cli`
+
+
+## ⚙️ Architettura
+
+Il progetto usa un’architettura event-driven, in cui i componenti non comunicano tramite chiamate dirette ma reagiscono a eventi generati quando qualcosa accade (es. dati letti dal bus). Questo riduce l’accoppiamento e rende il flusso più chiaro e controllabile.
+
+È applicato l’Observer pattern: AveBusController espone eventi (onBusEvent) e non conosce chi li consumerà; la GUI si registra come osservatore tramite GuiEventHandler, che traduce gli eventi in aggiornamenti grafici.
+
+GuiEventHandler funge anche da adattatore di threading: gli eventi provenienti dal thread di lettura vengono sincronizzati sul thread UI tramite Invoke / BeginInvoke.
