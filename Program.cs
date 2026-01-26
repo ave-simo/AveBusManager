@@ -7,7 +7,6 @@ namespace AveBusManager
 {
     internal class Program
     {
-        static string PORT = "COM3"; // default port for cli interface
 
         [STAThread] //thread principale
         static void Main(string[] args)
@@ -28,6 +27,7 @@ namespace AveBusManager
         private static void cliStartProcedure()
         {
             AveBusController aveBusController = new AveBusController();
+            string PORT = "COM3"; // change if needed
 
             if (!aveBusController.getAvailablePorts().Contains(PORT))
             {

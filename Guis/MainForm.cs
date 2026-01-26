@@ -9,16 +9,18 @@ namespace AveBusManager
     {
 
         private AveBusController aveBusController;
-        private GuiEventHandler guiEventHandler;
+        private GuiEventHandler guiEventHandler; // contains beginInvoke for gui update from external threads
+        private Color defaultColor;
 
         public MainForm()
         {
             InitializeComponent();
 
-            this.aveBusController = new AveBusController();
+            aveBusController = new AveBusController();
             guiEventHandler = new GuiEventHandler(this);
-            aveBusController.onBusEvent += guiEventHandler.guiUpdate;
+            aveBusController.busEvent += guiEventHandler.guiUpdate;
 
+            defaultColor = this.BackColor;
             disableAllButtons();
 
         }
@@ -77,7 +79,6 @@ namespace AveBusManager
 
         // =========================================================
         // buttons section
-
         private void enableAllButtons()
         {
             button1.Enabled = true;
@@ -109,11 +110,11 @@ namespace AveBusManager
         }
         private void button5_Click(object sender, EventArgs e)
         {
-            aveBusController.startReading();
+            aveBusController.startReadingBus();
         }
         private void button6_Click(object sender, EventArgs e)
         {
-            aveBusController.stopReading();
+            aveBusController.stopReadingBus();
         }
 
 
@@ -128,6 +129,19 @@ namespace AveBusManager
         {
             textBox1.AppendText(text + " ");
         }
+
+
+        public void changeBackGroundColor(string color)
+        {
+
+            if (color.Equals("red")) this.BackColor = Color.Red;
+            if (color.Equals("green")) this.BackColor = Color.Green;
+            if (color.Equals("blue")) this.BackColor = Color.Blue;
+            if (color.Equals("default")) this.BackColor = defaultColor;
+            // other colors...
+
+        }
+
 
     }
 }

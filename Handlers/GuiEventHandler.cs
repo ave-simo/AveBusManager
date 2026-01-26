@@ -1,5 +1,10 @@
 ﻿using System;
 
+/*
+ * this class is responsible of the interaction 
+ * with the gui from an external process
+ */
+
 namespace AveBusManager
 {
     internal class GuiEventHandler
@@ -11,6 +16,8 @@ namespace AveBusManager
         {
             this.mainForm = mainForm;
         }
+
+
 
         public void guiUpdate(string eventKey, string eventValue)
         {
@@ -24,30 +31,17 @@ namespace AveBusManager
             switch (eventKey)
             {
                 case "LIGHT_STATUS":
-                    if (eventValue.Equals("TURN_ON_LIGHT_1_FRAME_COMMAND"))
-                    {
-                        mainForm.changeLight1StatusColor("yellow");
-                    }
-
-                    if (eventValue.Equals("TURN_OFF_LIGHT_1_FRAME_COMMAND"))
-                    {
-                        mainForm.changeLight1StatusColor("black");
-                    }
-
-                    if (eventValue.Equals("CHANGE_LIGHT_STATUS_FRAME_COMMAND"))
-                    {
-                        // TODO
-                        // check color
-                            // if yellow -> paint it black <3
-                            // if black  -> paint it yellow
-                    }
-
-                    // la luce due non ci piace e non la gestiamo
-
+                    if (eventValue.Equals("TURN_ON_LIGHT_1_FRAME_COMMAND")) mainForm.changeLight1StatusColor("yellow");
+                    if (eventValue.Equals("TURN_OFF_LIGHT_1_FRAME_COMMAND")) mainForm.changeLight1StatusColor("black");
+                    if (eventValue.Equals("CHANGE_LIGHT_STATUS_FRAME_COMMAND")) {}
                     break;
 
                 case "PRINT_LOG":
                     mainForm.AppendLog(eventValue);
+                    break;
+
+                case "CHANGE_BACKGROUND_COLOR":
+                    mainForm.changeBackGroundColor(eventValue);
                     break;
 
                 default:

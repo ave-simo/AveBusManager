@@ -48,6 +48,7 @@
             this.light_2_statusTextBox = new System.Windows.Forms.TextBox();
             this.luce_1_statusLabel = new System.Windows.Forms.Label();
             this.luce_2_statusLabel = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -212,31 +213,32 @@
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox1.Size = new System.Drawing.Size(323, 242);
             this.textBox1.TabIndex = 10;
+            this.textBox1.Text = " ";
             // 
             // light_1_statusTextBox
             // 
             this.light_1_statusTextBox.BackColor = System.Drawing.Color.Black;
-            this.light_1_statusTextBox.Location = new System.Drawing.Point(14, 212);
+            this.light_1_statusTextBox.Location = new System.Drawing.Point(93, 185);
             this.light_1_statusTextBox.Multiline = true;
             this.light_1_statusTextBox.Name = "light_1_statusTextBox";
             this.light_1_statusTextBox.ReadOnly = true;
-            this.light_1_statusTextBox.Size = new System.Drawing.Size(148, 43);
+            this.light_1_statusTextBox.Size = new System.Drawing.Size(73, 23);
             this.light_1_statusTextBox.TabIndex = 11;
             // 
             // light_2_statusTextBox
             // 
             this.light_2_statusTextBox.BackColor = System.Drawing.Color.Black;
-            this.light_2_statusTextBox.Location = new System.Drawing.Point(179, 212);
+            this.light_2_statusTextBox.Location = new System.Drawing.Point(93, 222);
             this.light_2_statusTextBox.Multiline = true;
             this.light_2_statusTextBox.Name = "light_2_statusTextBox";
             this.light_2_statusTextBox.ReadOnly = true;
-            this.light_2_statusTextBox.Size = new System.Drawing.Size(148, 43);
+            this.light_2_statusTextBox.Size = new System.Drawing.Size(73, 23);
             this.light_2_statusTextBox.TabIndex = 12;
             // 
             // luce_1_statusLabel
             // 
             this.luce_1_statusLabel.AutoSize = true;
-            this.luce_1_statusLabel.Location = new System.Drawing.Point(11, 195);
+            this.luce_1_statusLabel.Location = new System.Drawing.Point(14, 195);
             this.luce_1_statusLabel.Name = "luce_1_statusLabel";
             this.luce_1_statusLabel.Size = new System.Drawing.Size(73, 13);
             this.luce_1_statusLabel.TabIndex = 13;
@@ -245,17 +247,28 @@
             // luce_2_statusLabel
             // 
             this.luce_2_statusLabel.AutoSize = true;
-            this.luce_2_statusLabel.Location = new System.Drawing.Point(176, 195);
+            this.luce_2_statusLabel.Location = new System.Drawing.Point(14, 232);
             this.luce_2_statusLabel.Name = "luce_2_statusLabel";
             this.luce_2_statusLabel.Size = new System.Drawing.Size(73, 13);
             this.luce_2_statusLabel.TabIndex = 14;
             this.luce_2_statusLabel.Text = "Light 2 status:";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox2.Location = new System.Drawing.Point(197, 180);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(130, 65);
+            this.groupBox2.TabIndex = 15;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Rent this free space";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(668, 266);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.luce_2_statusLabel);
             this.Controls.Add(this.luce_1_statusLabel);
             this.Controls.Add(this.light_2_statusTextBox);
@@ -299,5 +312,6 @@
         private System.Windows.Forms.TextBox light_2_statusTextBox;
         private System.Windows.Forms.Label luce_1_statusLabel;
         private System.Windows.Forms.Label luce_2_statusLabel;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }
