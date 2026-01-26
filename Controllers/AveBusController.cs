@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO.Ports;
-using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -54,12 +52,12 @@ namespace AveBusManager
         {
             try
             {
-                this.serialPort.PortName = portName;
-                this.serialPort.BaudRate = baudRate;
-                this.serialPort.Parity = parity;
-                this.serialPort.DataBits = databits;
-                this.serialPort.StopBits = stopBits;
-                this.serialPort.Handshake = handShake;
+                serialPort.PortName = portName;
+                serialPort.BaudRate = baudRate;
+                serialPort.Parity = parity;
+                serialPort.DataBits = databits;
+                serialPort.StopBits = stopBits;
+                serialPort.Handshake = handShake;
 
                 Console.WriteLine("port " + serialPort.PortName + " configured successfully.");
             }
@@ -91,6 +89,7 @@ namespace AveBusManager
 
         // ==============================================================
         // methods to write in avebus
+        // (add here your new methods)
         public void changeLight1Status() 
         { 
             sendCommand(CHANGE_LIGHT_STATUS_FRAME_COMMAND);
@@ -155,19 +154,18 @@ namespace AveBusManager
 
                 Thread.Sleep(100);
 
-            }
+        }
         }
 
 
 
         // ==============================================================
         // methods to read from avebus
-
         public void startReadingBus()
         {
             // evita doppio start
             if (readBusThread != null && readBusThread.IsAlive)
-                return; 
+                return;
 
             read = true;
             readBusThread = new Thread(readBusLoop);
@@ -181,88 +179,12 @@ namespace AveBusManager
             Console.WriteLine("stopped reading AveBus interface");
         }
 
-        private void readBusLoop()
+        public void readBusLoop()
         {
 
-            List<byte> buffer = new List<byte>();
-            var builder = new StringBuilder();
-            string wholeMessage;
-            int msgLen = 0;
-
-
-            while (read)
-            {
-                // mio algoritmo
-                /*
-                if (serialPort.BytesToRead > 0)
-                {
-                    int raw = serialPort.ReadByte();
-                    byte decoded = (byte)~raw;
-
-                    // raw stateless read
-                    busEvent?.Invoke("PRINT_LOG", decoded.ToString("X2"));
-                    
-                    // stateful read
-                    
-                    buffer.Add(decoded);
-
-                    if (buffer.Count == 2)
-                    {
-                        // isolate lower five bits to get message length
-                        msgLen = decoded & 0b11111;
-
-                        if (msgLen < 7 || msgLen > 32) 
-                        {
-                            // messaggio sporco
-                            // scarto e resetto per prossima lettura
-                            buffer.Clear();
-                            msgLen = 0;
-                            continue;
-                        }
-
-                    }
-
-                    if (msgLen > 0 && buffer.Count == msgLen && buffer.Count >= 7 && buffer.Count <= 32)
-                    {
-                        // messaggio completo e valido
-
-                        builder.Append("[ ");
-                        for (int i = 0; i < msgLen; i++)
-                        {
-                            builder.Append(buffer[i].ToString("X2"));
-                            builder.Append(" ");
-                        }
-                        builder.Append(" ]");
-                        wholeMessage = builder.ToString();
-
-                        busEvent?.Invoke("PRINT_LOG", wholeMessage);
-                        busEvent?.Invoke("PRINT_LOG", Environment.NewLine + Environment.NewLine);
-
-                        // resetto per prossima lettura
-                        builder = new StringBuilder();
-                        buffer.Clear();
-                        msgLen = 0;
-                        
-
-                    }
-                
-                }
-                */
-
-                // algoritmo ufficiale
-                gestisciRicezioneSuSeriale();
-
-                Thread.Sleep(100);
-            }
-            
-        }
-
-
-        public void gestisciRicezioneSuSeriale()
-        {
             serialPort.DiscardInBuffer();
 
-            while (true)
+            while (read)
             {
                 if (serialPort.BytesToRead > 100)
                 {
@@ -304,14 +226,94 @@ namespace AveBusManager
                             stringa += completeFrame[i].ToString("X2") + " ";
                         }
 
-                        busEvent?.Invoke("PRINT_LOG", "[ " + stringa + " ]");
+                        busEvent?.Invoke("PRINT_LOG", "[ " + stringa + "]");
                         busEvent?.Invoke("PRINT_LOG", Environment.NewLine);
-
 
                     }
                 }
                 Thread.Sleep(50);
             }
+        }
+
+        private void gestisciRicezioneSuSeriale()
+        {
+
+        }
+
+        private void readBusLoopOLD()
+        {
+
+            List<byte> buffer = new List<byte>();
+            var builder = new StringBuilder();
+            string wholeMessage;
+            int msgLen = 0;
+
+
+            while (read)
+            {
+                // mio algoritmo
+                /*
+                if (serialPort.BytesToRead > 0)
+                {
+                    int raw = serialPort.ReadByte();
+                    byte decoded = (byte)~raw;
+
+                    // raw stateless read
+                    busEvent?.Invoke("PRINT_LOG", decoded.ToString("X2"));
+                    
+                    // stateful read
+                    
+                    buffer.Add(decoded);
+
+                    if (buffer.Count == 2)
+                    {
+                        // isolate lower five bits to get message length
+                        msgLen = decoded & 0b11111;
+
+                        if (msgLen < 7 || msgLen > 32) 
+                {
+                            // messaggio sporco
+                            // scarto e resetto per prossima lettura
+                            buffer.Clear();
+                            msgLen = 0;
+                            continue;
+                        }
+
+                    }
+
+                    if (msgLen > 0 && buffer.Count == msgLen && buffer.Count >= 7 && buffer.Count <= 32)
+                    {
+                        // messaggio completo e valido
+
+                        builder.Append("[ ");
+                        for (int i = 0; i < msgLen; i++)
+                        {
+                            builder.Append(buffer[i].ToString("X2"));
+                            builder.Append(" ");
+                        }
+                        builder.Append(" ]");
+                        wholeMessage = builder.ToString();
+
+                        busEvent?.Invoke("PRINT_LOG", wholeMessage);
+                        busEvent?.Invoke("PRINT_LOG", Environment.NewLine + Environment.NewLine);
+
+                        // resetto per prossima lettura
+                        builder = new StringBuilder();
+                        buffer.Clear();
+                        msgLen = 0;
+                        
+
+                    }
+                
+                }
+                */
+
+                // algoritmo ufficiale
+                //gestisciRicezioneSuSeriale();
+
+                Thread.Sleep(100);
+            }
+
         }
 
     }

@@ -65,6 +65,8 @@ namespace AveBusManager
             aveBusController.openSerialPort();
             MessageBox.Show("Successfully configured COM port", "Status");
 
+            enableAllButtons();
+
             // update labels
             baud_var.Text = aveBusController.getSerialPort().BaudRate.ToString();
             parity_var.Text = aveBusController.getSerialPort().Parity.ToString();
@@ -79,23 +81,6 @@ namespace AveBusManager
 
         // =========================================================
         // buttons section
-        private void enableAllButtons()
-        {
-            button1.Enabled = true;
-            button2.Enabled = true;
-            button3.Enabled = true;
-            startReading_btn.Enabled = true;
-            stopReading_btn.Enabled = true;
-        }
-
-        private void disableAllButtons()
-        {
-            button1.Enabled = false;
-            button2.Enabled = false;
-            button3.Enabled = false;
-            startReading_btn.Enabled = false;
-            stopReading_btn.Enabled = false;
-        }
         private void button1_Click(object sender, EventArgs e)
         {
             aveBusController.changeLight1Status();
@@ -116,8 +101,22 @@ namespace AveBusManager
         {
             aveBusController.stopReadingBus();
         }
-
-
+        private void enableAllButtons()
+        {
+            button1.Enabled = true;
+            button2.Enabled = true;
+            button3.Enabled = true;
+            startReading_btn.Enabled = true;
+            stopReading_btn.Enabled = true;
+        }
+        private void disableAllButtons()
+        {
+            button1.Enabled = false;
+            button2.Enabled = false;
+            button3.Enabled = false;
+            startReading_btn.Enabled = false;
+            stopReading_btn.Enabled = false;
+        }
 
         public void changeLight1StatusColor(string color)
         {
@@ -129,8 +128,6 @@ namespace AveBusManager
         {
             textBox1.AppendText(text + " ");
         }
-
-
         public void changeBackGroundColor(string color)
         {
 
@@ -141,6 +138,9 @@ namespace AveBusManager
             // other colors...
 
         }
+
+
+
 
 
     }
