@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Ports;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -156,17 +157,20 @@ namespace AveBusManager
 
             while (true)
             {
-                pressedKey = Console.ReadKey(true).Key;
+                //Console.Write(".");
+                if (Console.KeyAvailable)
+                {
+                    pressedKey = Console.ReadKey(true).Key; //bloccante
 
-                if (pressedKey.Equals(ConsoleKey.R)) busEvent?.Invoke("CHANGE_BACKGROUND_COLOR", "red");
-                if (pressedKey.Equals(ConsoleKey.G)) busEvent?.Invoke("CHANGE_BACKGROUND_COLOR", "green");
-                if (pressedKey.Equals(ConsoleKey.B)) busEvent?.Invoke("CHANGE_BACKGROUND_COLOR", "blue");
-                if (pressedKey.Equals(ConsoleKey.D)) busEvent?.Invoke("CHANGE_BACKGROUND_COLOR", "default");
-
+                    if (pressedKey.Equals(ConsoleKey.R)) busEvent?.Invoke("CHANGE_BACKGROUND_COLOR", "red");
+                    if (pressedKey.Equals(ConsoleKey.G)) busEvent?.Invoke("CHANGE_BACKGROUND_COLOR", "green");
+                    if (pressedKey.Equals(ConsoleKey.B)) busEvent?.Invoke("CHANGE_BACKGROUND_COLOR", "blue");
+                    if (pressedKey.Equals(ConsoleKey.D)) busEvent?.Invoke("CHANGE_BACKGROUND_COLOR", "default");
+                }
 
                 Thread.Sleep(100);
 
-        }
+            }
         }
 
 
@@ -191,17 +195,13 @@ namespace AveBusManager
             Console.WriteLine("stopped reading AveBus interface");
         }
 
-        public void readBusLoop()
+        public void readBusLoopNEW()
         {
 
             serialPort.DiscardInBuffer();
 
             while (read)
             {
-                if (serialPort.BytesToRead > 100)
-                {
-                    serialPort.DiscardInBuffer();
-                }
                 if (serialPort.BytesToRead >= 2) //PEEK
                 {
                     byte[] firstTwoBytes = new byte[2];
@@ -209,40 +209,44 @@ namespace AveBusManager
 
                     int completePackLength = (byte)((~firstTwoBytes[1] & 0x1F) + 1);
 
-                    int totalCounterOfBytesToRead = completePackLength - firstTwoBytes.Length;
-                    byte[] remainingBytes = new byte[completePackLength - 2];
-                    int countOfBytesEffectivelyRead = 0;
-
-                    int portionLength = 0;
-                    int portionRemainingBytesToRead = totalCounterOfBytesToRead;
-
-                    while (portionRemainingBytesToRead > 0)
+                    if (completePackLength > 2)
                     {
-                        portionLength = serialPort.Read(remainingBytes, countOfBytesEffectivelyRead, portionRemainingBytesToRead);
-                        countOfBytesEffectivelyRead += portionLength;
-                        portionRemainingBytesToRead -= portionLength;
-                        Thread.Sleep(50);
-                    }
+                        int totalCounterOfBytesToRead = completePackLength - firstTwoBytes.Length;
 
-                    if (countOfBytesEffectivelyRead == remainingBytes.Length)
-                    {
-                        byte[] completeFrame = new byte[completePackLength];
-                        Array.Copy(firstTwoBytes, 0, completeFrame, 0, firstTwoBytes.Length);
-                        Array.Copy(remainingBytes, 0, completeFrame, firstTwoBytes.Length, remainingBytes.Length);
+                        byte[] remainingBytes = new byte[completePackLength - 2];
+                        int countOfBytesEffectivelyRead = 0;
 
-                        String stringa = "";
-                        int i = 0;
-                        for (i = 0; i < completeFrame.Length; i++)
+                        int portionLength = 0;
+                        int portionRemainingBytesToRead = totalCounterOfBytesToRead;
+
+                        while (portionRemainingBytesToRead > 0)
                         {
-                            completeFrame[i] = (byte)(~completeFrame[i]);
-                            stringa += completeFrame[i].ToString("X2") + " ";
+                            portionLength = serialPort.Read(remainingBytes, countOfBytesEffectivelyRead, portionRemainingBytesToRead);
+                            countOfBytesEffectivelyRead += portionLength;
+                            portionRemainingBytesToRead -= portionLength;
+                            Thread.Sleep(50);
                         }
 
-                        busEvent?.Invoke("PRINT_LOG", "[ " + stringa + "]");
-                        busEvent?.Invoke("PRINT_LOG", Environment.NewLine);
+                        if (countOfBytesEffectivelyRead == remainingBytes.Length)
+                        {
+                            byte[] completeFrame = new byte[completePackLength];
+                            Array.Copy(firstTwoBytes, 0, completeFrame, 0, firstTwoBytes.Length);
+                            Array.Copy(remainingBytes, 0, completeFrame, firstTwoBytes.Length, remainingBytes.Length);
 
-                        updateLightsIndicators(stringa);
+                            String stringa = "";
+                            int i = 0;
+                            for (i = 0; i < completeFrame.Length; i++)
+                            {
+                                completeFrame[i] = (byte)(~completeFrame[i]);
+                                stringa += completeFrame[i].ToString("X2") + " ";
+                            }
 
+                            busEvent?.Invoke("PRINT_LOG", "[ " + stringa + "]");
+                            busEvent?.Invoke("PRINT_LOG", Environment.NewLine);
+
+                            updateLightsIndicators(stringa);
+
+                        }
                     }
                 }
                 Thread.Sleep(50);
@@ -260,81 +264,68 @@ namespace AveBusManager
             if(message.Equals("40 07 27 27 4E 02 FA EA".Trim())) { }
         }
 
-        private void readBusLoopOLD()
+        private void readBusLoop()
         {
+            serialPort.DiscardInBuffer();
 
-            List<byte> buffer = new List<byte>();
-            var builder = new StringBuilder();
-            string wholeMessage;
-            int msgLen = 0;
-
+            byte[] firstTwoBytesBuf = new byte[2];
+            byte[] msgBuf;
+            int len;
 
             while (read)
             {
-                // mio algoritmo
-                /*
-                if (serialPort.BytesToRead > 0)
+                // PEEK
+                if (serialPort.BytesToRead < 2)
                 {
-                    int raw = serialPort.ReadByte();
-                    byte decoded = (byte)~raw;
-
-                    // raw stateless read
-                    busEvent?.Invoke("PRINT_LOG", decoded.ToString("X2"));
-                    
-                    // stateful read
-                    
-                    buffer.Add(decoded);
-
-                    if (buffer.Count == 2)
-                    {
-                        // isolate lower five bits to get message length
-                        msgLen = decoded & 0b11111;
-
-                        if (msgLen < 7 || msgLen > 32) 
-                {
-                            // messaggio sporco
-                            // scarto e resetto per prossima lettura
-                            buffer.Clear();
-                            msgLen = 0;
-                            continue;
-                        }
-
-                    }
-
-                    if (msgLen > 0 && buffer.Count == msgLen && buffer.Count >= 7 && buffer.Count <= 32)
-                    {
-                        // messaggio completo e valido
-
-                        builder.Append("[ ");
-                        for (int i = 0; i < msgLen; i++)
-                        {
-                            builder.Append(buffer[i].ToString("X2"));
-                            builder.Append(" ");
-                        }
-                        builder.Append(" ]");
-                        wholeMessage = builder.ToString();
-
-                        busEvent?.Invoke("PRINT_LOG", wholeMessage);
-                        busEvent?.Invoke("PRINT_LOG", Environment.NewLine + Environment.NewLine);
-
-                        // resetto per prossima lettura
-                        builder = new StringBuilder();
-                        buffer.Clear();
-                        msgLen = 0;
-                        
-
-                    }
-                
+                    Thread.Sleep(50);
+                    continue;
                 }
-                */
+                
+                serialPort.Read(firstTwoBytesBuf, 0, 2);         // leggo i primi due byte
+                len = (byte)((~firstTwoBytesBuf[1] & 0x1F) + 1); // calcolo lunghezza pacchetto
 
-                // algoritmo ufficiale
-                //gestisciRicezioneSuSeriale();
+                // frame sporco
+                if (len < 7 || len > 32)
+                {
+                    serialPort.DiscardInBuffer();
+                    continue;
+                }
 
-                Thread.Sleep(100);
+                msgBuf = new byte[len];
+
+                // copio i primi due byte
+                msgBuf[0] = firstTwoBytesBuf[0];
+                msgBuf[1] = firstTwoBytesBuf[1];
+
+                int remaining = len - 2;   // byte ancora da leggere
+                int offset = 2;            // dove scrivere nel buffer
+
+                // leggo bytes rimanenti
+                while (remaining > 0)
+                {
+                    int readNow = serialPort.Read(msgBuf, offset, remaining);
+                    offset += readNow;
+                    remaining -= readNow;
+                    Thread.Sleep(50);
+                }
+
+                // messaggio completo
+                string message = "";
+                for (int i = 0; i < msgBuf.Length; i++)
+                {
+                    msgBuf[i] = (byte)~msgBuf[i];
+                    message += msgBuf[i].ToString("X2") + " ";
+                }
+
+                busEvent?.Invoke("PRINT_LOG", "[ " + message + " ]" + Environment.NewLine);
             }
-
         }
 
+
+
+
+
+
     }
+
 }
