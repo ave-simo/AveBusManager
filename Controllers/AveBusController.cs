@@ -317,7 +317,7 @@ namespace AveBusManager
                     message += msgBuf[i].ToString("X2") + " ";
                 }
 
-                busEvent?.Invoke("PRINT_LOG", "[ " + message + " ]" + Environment.NewLine);
+                busEvent?.Invoke("PRINT_LOG", "[ " + message + "]" + Environment.NewLine);
                 updateLightsIndicators(message);
             }
         }
