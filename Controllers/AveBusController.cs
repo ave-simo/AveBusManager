@@ -318,11 +318,9 @@ namespace AveBusManager
                 }
 
                 busEvent?.Invoke("PRINT_LOG", "[ " + message + " ]" + Environment.NewLine);
+                updateLightsIndicators(message);
             }
         }
-
-
-
 
 
 
