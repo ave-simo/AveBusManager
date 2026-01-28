@@ -12,11 +12,9 @@ namespace AveBusManager
         private Thread readBusThread;
         private Thread readKeyboardThread;
 
-        private MainForm mainForm;
-
         // questo non è una funzione, è il tipo della funzione
-        public delegate void BusGuiCallback(string key, string value, MainForm form);
-        private BusGuiCallback guiCallback = GuiEventHandler.guiUpdate;
+        public delegate void BusGuiCallback(string key, string value);
+        private BusGuiCallback guiCallback = null; // questa è la funzione di callback richiamabile. E' messa a null e impostabile tramite un setter per permettere a programmi esterni di interagirci.
 
         private static byte[] CHANGE_LIGHT_STATUS_FRAME_COMMAND = new byte[] { 0x40, 0x07, 0x27, 0x27, 0x4E, 0x02, 0xFA, 0xEA };
         private static byte[] TURN_ON_LIGHT_1_FRAME_COMMAND     = new byte[] { 0x40, 0x07, 0x27, 0x27, 0x4E, 0x01, 0xFA, 0xE9 };
@@ -26,7 +24,7 @@ namespace AveBusManager
 
 
 
-        public AveBusController(MainForm mainForm)
+        public AveBusController(MainForm form)
         {
             // init keyboard loop
             readKeyboardThread = new Thread(readKeyboardLoop);
@@ -34,10 +32,15 @@ namespace AveBusManager
             Console.WriteLine("started reading keyboard");
             Console.WriteLine("Press R, G, or B to change Background color.");
             Console.WriteLine("Press D to restore default color.");
-
-            this.mainForm = mainForm;
         }
 
+
+        // ==============================================================
+        // callback setter
+        public void registerEventHandler(BusGuiCallback eventHandler)
+        {
+            guiCallback = eventHandler;
+        }
 
 
         // ==============================================================
@@ -165,10 +168,10 @@ namespace AveBusManager
                 {
                     pressedKey = Console.ReadKey(true).Key; // istruzione bloccante
 
-                    if (pressedKey.Equals(ConsoleKey.R)) dispatchToGui("CHANGE_BACKGROUND_COLOR", "red", mainForm);
-                    if (pressedKey.Equals(ConsoleKey.G)) dispatchToGui("CHANGE_BACKGROUND_COLOR", "green", mainForm);
-                    if (pressedKey.Equals(ConsoleKey.B)) dispatchToGui("CHANGE_BACKGROUND_COLOR", "blue", mainForm);
-                    if (pressedKey.Equals(ConsoleKey.D)) dispatchToGui("CHANGE_BACKGROUND_COLOR", "default", mainForm);
+                    if (pressedKey.Equals(ConsoleKey.R)) propagateEvent("CHANGE_BACKGROUND_COLOR", "red");
+                    if (pressedKey.Equals(ConsoleKey.G)) propagateEvent("CHANGE_BACKGROUND_COLOR", "green");
+                    if (pressedKey.Equals(ConsoleKey.B)) propagateEvent("CHANGE_BACKGROUND_COLOR", "blue");
+                    if (pressedKey.Equals(ConsoleKey.D)) propagateEvent("CHANGE_BACKGROUND_COLOR", "default");
                 }
 
                 Thread.Sleep(100);
@@ -249,7 +252,7 @@ namespace AveBusManager
                     message += msgBuf[i].ToString("X2") + " ";
                 }
 
-                dispatchToGui("PRINT_LOG", "[ " + message + "]" + Environment.NewLine, mainForm);
+                propagateEvent("PRINT_LOG", "[ " + message + "]" + Environment.NewLine);
                 updateLightsIndicators(message);
             }
         }
@@ -257,10 +260,10 @@ namespace AveBusManager
         {
             message = message.Trim();
 
-            if (message.Equals("40 07 27 27 4E 01 FA E9".Trim())) dispatchToGui("LIGHT_STATUS", "TURN_ON_LIGHT_1_FRAME_COMMAND", mainForm);
-            if (message.Equals("40 07 27 27 4E 03 FA EB".Trim())) dispatchToGui("LIGHT_STATUS", "TURN_OFF_LIGHT_1_FRAME_COMMAND", mainForm);
-            if (message.Equals("40 07 26 26 4E 01 FA E7".Trim())) dispatchToGui("LIGHT_STATUS", "TURN_ON_LIGHT_2_FRAME_COMMAND", mainForm);
-            if (message.Equals("40 07 26 26 4E 03 FA E9".Trim())) dispatchToGui("LIGHT_STATUS", "TURN_OFF_LIGHT_2_FRAME_COMMAND", mainForm);
+            if (message.Equals("40 07 27 27 4E 01 FA E9".Trim())) propagateEvent("LIGHT_STATUS", "TURN_ON_LIGHT_1_FRAME_COMMAND");
+            if (message.Equals("40 07 27 27 4E 03 FA EB".Trim())) propagateEvent("LIGHT_STATUS", "TURN_OFF_LIGHT_1_FRAME_COMMAND");
+            if (message.Equals("40 07 26 26 4E 01 FA E7".Trim())) propagateEvent("LIGHT_STATUS", "TURN_ON_LIGHT_2_FRAME_COMMAND");
+            if (message.Equals("40 07 26 26 4E 03 FA E9".Trim())) propagateEvent("LIGHT_STATUS", "TURN_OFF_LIGHT_2_FRAME_COMMAND");
             if (message.Equals("40 07 27 27 4E 02 FA EA".Trim())) { }
         }
         public void readBusLoopGiovanni()
@@ -325,16 +328,14 @@ namespace AveBusManager
 
         // ==============================================================
         // callback 
-
-        void dispatchToGui(string eventKey, string eventValue, MainForm form)
+        void propagateEvent(string eventKey, string eventValue)
         {
-            if (form.InvokeRequired) form.BeginInvoke(guiCallback, new object[] { eventKey, eventValue, form });
-            else guiCallback(eventKey, eventValue, form);
+            if (guiCallback != null)
+            {
+                guiCallback(eventKey, eventValue);
+            }
 
         }
-
-
-
     }
 
 }
