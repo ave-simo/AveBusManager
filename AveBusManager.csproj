@@ -48,7 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Handlers\GuiEventHandler.cs" />
     <Compile Include="Guis\CLI.cs" />
     <Compile Include="Controllers\AveBusController.cs" />
     <Compile Include="Guis\MainForm.cs">

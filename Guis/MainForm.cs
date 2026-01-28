@@ -9,21 +9,59 @@ namespace AveBusManager
     {
 
         private AveBusController aveBusController;
-        private GuiEventHandler guiEventHandler; // contains beginInvoke for gui update from external threads
         private Color defaultColor;
+
+        public delegate void DelegateUpdateGui(string key, string value);
+        DelegateUpdateGui updateGUI = null;
 
         public MainForm()
         {
             InitializeComponent();
 
-            aveBusController = new AveBusController();
-            guiEventHandler = new GuiEventHandler(this);
-            aveBusController.busEvent += guiEventHandler.guiUpdate;
+            updateGUI = guiUpdate;
 
+            aveBusController = new AveBusController(this);
+            aveBusController.registerEventHandler(avebusEventHandler);
             defaultColor = this.BackColor;
             disableAllButtons();
-
         }
+
+
+
+        // =========================================================
+        // avebus event handler
+        void avebusEventHandler(string key, string value)
+        {
+            Console.WriteLine("Arrivato key:" + key + " e value:" + value);   // aggiorna terminale
+            this.BeginInvoke(updateGUI, new object[] { key, value });         // aggiorna grafica
+        }
+
+        public void guiUpdate(string eventKey, string eventValue)
+        {
+            switch (eventKey)
+            {
+                case "LIGHT_STATUS":
+                    if (eventValue.Equals("TURN_ON_LIGHT_1_FRAME_COMMAND")) this.changeLight1StatusColor("yellow");
+                    if (eventValue.Equals("TURN_OFF_LIGHT_1_FRAME_COMMAND")) this.changeLight1StatusColor("black");
+                    if (eventValue.Equals("TURN_ON_LIGHT_2_FRAME_COMMAND")) this.changeLight2StatusColor("yellow");
+                    if (eventValue.Equals("TURN_OFF_LIGHT_2_FRAME_COMMAND")) this.changeLight2StatusColor("black");
+                    if (eventValue.Equals("CHANGE_LIGHT_STATUS_FRAME_COMMAND")) { }
+                    break;
+
+                case "PRINT_LOG":
+                    this.AppendLog(eventValue);
+                    break;
+
+                case "CHANGE_BACKGROUND_COLOR":
+                    this.changeBackGroundColor(eventValue);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+
 
         // useless =================================================
         private void label1_Click(object sender, EventArgs e)  { }
