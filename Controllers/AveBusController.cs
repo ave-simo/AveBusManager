@@ -157,10 +157,10 @@ namespace AveBusManager
 
             while (true)
             {
-                //Console.Write(".");
+                // PEEK -> evita il blocco
                 if (Console.KeyAvailable)
                 {
-                    pressedKey = Console.ReadKey(true).Key; //bloccante
+                    pressedKey = Console.ReadKey(true).Key; // istruzione bloccante
 
                     if (pressedKey.Equals(ConsoleKey.R)) busEvent?.Invoke("CHANGE_BACKGROUND_COLOR", "red");
                     if (pressedKey.Equals(ConsoleKey.G)) busEvent?.Invoke("CHANGE_BACKGROUND_COLOR", "green");
