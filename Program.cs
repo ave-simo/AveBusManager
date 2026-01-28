@@ -26,7 +26,7 @@ namespace AveBusManager
 
         private static void cliStartProcedure()
         {
-            AveBusController aveBusController = new AveBusController();
+            AveBusController aveBusController = new AveBusController(new MainForm());
             string PORT = "COM3"; // change if needed
 
             if (!aveBusController.getAvailablePorts().Contains(PORT))

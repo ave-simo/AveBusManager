@@ -9,17 +9,13 @@ namespace AveBusManager
     {
 
         private AveBusController aveBusController;
-        private GuiEventHandler guiEventHandler; // contains beginInvoke for gui update from external threads
         private Color defaultColor;
 
         public MainForm()
         {
             InitializeComponent();
 
-            aveBusController = new AveBusController();
-            guiEventHandler = new GuiEventHandler(this);
-            aveBusController.busEvent += guiEventHandler.guiUpdate;
-
+            aveBusController = new AveBusController(this);
             defaultColor = this.BackColor;
             disableAllButtons();
 

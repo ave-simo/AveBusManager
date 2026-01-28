@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace AveBusManager
@@ -15,7 +12,11 @@ namespace AveBusManager
         private Thread readBusThread;
         private Thread readKeyboardThread;
 
-        public event Action<string, string> busEvent;
+        private MainForm mainForm;
+
+        // questo non è una funzione, è il tipo della funzione
+        public delegate void BusGuiCallback(string key, string value, MainForm form);
+        private BusGuiCallback guiCallback = GuiEventHandler.guiUpdate;
 
         private static byte[] CHANGE_LIGHT_STATUS_FRAME_COMMAND = new byte[] { 0x40, 0x07, 0x27, 0x27, 0x4E, 0x02, 0xFA, 0xEA };
         private static byte[] TURN_ON_LIGHT_1_FRAME_COMMAND     = new byte[] { 0x40, 0x07, 0x27, 0x27, 0x4E, 0x01, 0xFA, 0xE9 };
@@ -25,7 +26,7 @@ namespace AveBusManager
 
 
 
-        public AveBusController()
+        public AveBusController(MainForm mainForm)
         {
             // init keyboard loop
             readKeyboardThread = new Thread(readKeyboardLoop);
@@ -33,6 +34,8 @@ namespace AveBusManager
             Console.WriteLine("started reading keyboard");
             Console.WriteLine("Press R, G, or B to change Background color.");
             Console.WriteLine("Press D to restore default color.");
+
+            this.mainForm = mainForm;
         }
 
 
@@ -162,10 +165,10 @@ namespace AveBusManager
                 {
                     pressedKey = Console.ReadKey(true).Key; // istruzione bloccante
 
-                    if (pressedKey.Equals(ConsoleKey.R)) busEvent?.Invoke("CHANGE_BACKGROUND_COLOR", "red");
-                    if (pressedKey.Equals(ConsoleKey.G)) busEvent?.Invoke("CHANGE_BACKGROUND_COLOR", "green");
-                    if (pressedKey.Equals(ConsoleKey.B)) busEvent?.Invoke("CHANGE_BACKGROUND_COLOR", "blue");
-                    if (pressedKey.Equals(ConsoleKey.D)) busEvent?.Invoke("CHANGE_BACKGROUND_COLOR", "default");
+                    if (pressedKey.Equals(ConsoleKey.R)) dispatchToGui("CHANGE_BACKGROUND_COLOR", "red", mainForm);
+                    if (pressedKey.Equals(ConsoleKey.G)) dispatchToGui("CHANGE_BACKGROUND_COLOR", "green", mainForm);
+                    if (pressedKey.Equals(ConsoleKey.B)) dispatchToGui("CHANGE_BACKGROUND_COLOR", "blue", mainForm);
+                    if (pressedKey.Equals(ConsoleKey.D)) dispatchToGui("CHANGE_BACKGROUND_COLOR", "default", mainForm);
                 }
 
                 Thread.Sleep(100);
@@ -188,82 +191,11 @@ namespace AveBusManager
             readBusThread.Start();
             Console.WriteLine("started reading AveBus interface");
         }
-
         public void stopReadingBus()
         {
             this.read = false;
             Console.WriteLine("stopped reading AveBus interface");
         }
-
-        public void readBusLoopNEW()
-        {
-
-            serialPort.DiscardInBuffer();
-
-            while (read)
-            {
-                if (serialPort.BytesToRead >= 2) //PEEK
-                {
-                    byte[] firstTwoBytes = new byte[2];
-                    serialPort.Read(firstTwoBytes, 0, firstTwoBytes.Length);
-
-                    int completePackLength = (byte)((~firstTwoBytes[1] & 0x1F) + 1);
-
-                    if (completePackLength > 2)
-                    {
-                        int totalCounterOfBytesToRead = completePackLength - firstTwoBytes.Length;
-
-                        byte[] remainingBytes = new byte[completePackLength - 2];
-                        int countOfBytesEffectivelyRead = 0;
-
-                        int portionLength = 0;
-                        int portionRemainingBytesToRead = totalCounterOfBytesToRead;
-
-                        while (portionRemainingBytesToRead > 0)
-                        {
-                            portionLength = serialPort.Read(remainingBytes, countOfBytesEffectivelyRead, portionRemainingBytesToRead);
-                            countOfBytesEffectivelyRead += portionLength;
-                            portionRemainingBytesToRead -= portionLength;
-                            Thread.Sleep(50);
-                        }
-
-                        if (countOfBytesEffectivelyRead == remainingBytes.Length)
-                        {
-                            byte[] completeFrame = new byte[completePackLength];
-                            Array.Copy(firstTwoBytes, 0, completeFrame, 0, firstTwoBytes.Length);
-                            Array.Copy(remainingBytes, 0, completeFrame, firstTwoBytes.Length, remainingBytes.Length);
-
-                            String stringa = "";
-                            int i = 0;
-                            for (i = 0; i < completeFrame.Length; i++)
-                            {
-                                completeFrame[i] = (byte)(~completeFrame[i]);
-                                stringa += completeFrame[i].ToString("X2") + " ";
-                            }
-
-                            busEvent?.Invoke("PRINT_LOG", "[ " + stringa + "]");
-                            busEvent?.Invoke("PRINT_LOG", Environment.NewLine);
-
-                            updateLightsIndicators(stringa);
-
-                        }
-                    }
-                }
-                Thread.Sleep(50);
-            }
-        }
-
-        private void updateLightsIndicators(string message)
-        {
-            message = message.Trim();
-
-            if(message.Equals("40 07 27 27 4E 01 FA E9".Trim())) busEvent?.Invoke("LIGHT_STATUS", "TURN_ON_LIGHT_1_FRAME_COMMAND");
-            if(message.Equals("40 07 27 27 4E 03 FA EB".Trim())) busEvent?.Invoke("LIGHT_STATUS", "TURN_OFF_LIGHT_1_FRAME_COMMAND");
-            if(message.Equals("40 07 26 26 4E 01 FA E7".Trim())) busEvent?.Invoke("LIGHT_STATUS", "TURN_ON_LIGHT_2_FRAME_COMMAND");
-            if(message.Equals("40 07 26 26 4E 03 FA E9".Trim())) busEvent?.Invoke("LIGHT_STATUS", "TURN_OFF_LIGHT_2_FRAME_COMMAND");
-            if(message.Equals("40 07 27 27 4E 02 FA EA".Trim())) { }
-        }
-
         private void readBusLoop()
         {
             serialPort.DiscardInBuffer();
@@ -317,9 +249,88 @@ namespace AveBusManager
                     message += msgBuf[i].ToString("X2") + " ";
                 }
 
-                busEvent?.Invoke("PRINT_LOG", "[ " + message + "]" + Environment.NewLine);
+                dispatchToGui("PRINT_LOG", "[ " + message + "]" + Environment.NewLine, mainForm);
                 updateLightsIndicators(message);
             }
+        }
+        private void updateLightsIndicators(string message)
+        {
+            message = message.Trim();
+
+            if (message.Equals("40 07 27 27 4E 01 FA E9".Trim())) dispatchToGui("LIGHT_STATUS", "TURN_ON_LIGHT_1_FRAME_COMMAND", mainForm);
+            if (message.Equals("40 07 27 27 4E 03 FA EB".Trim())) dispatchToGui("LIGHT_STATUS", "TURN_OFF_LIGHT_1_FRAME_COMMAND", mainForm);
+            if (message.Equals("40 07 26 26 4E 01 FA E7".Trim())) dispatchToGui("LIGHT_STATUS", "TURN_ON_LIGHT_2_FRAME_COMMAND", mainForm);
+            if (message.Equals("40 07 26 26 4E 03 FA E9".Trim())) dispatchToGui("LIGHT_STATUS", "TURN_OFF_LIGHT_2_FRAME_COMMAND", mainForm);
+            if (message.Equals("40 07 27 27 4E 02 FA EA".Trim())) { }
+        }
+        public void readBusLoopGiovanni()
+        {
+
+            serialPort.DiscardInBuffer();
+
+            while (read)
+            {
+                if (serialPort.BytesToRead >= 2) //PEEK
+                {
+                    byte[] firstTwoBytes = new byte[2];
+                    serialPort.Read(firstTwoBytes, 0, firstTwoBytes.Length);
+
+                    int completePackLength = (byte)((~firstTwoBytes[1] & 0x1F) + 1);
+
+                    if (completePackLength > 2)
+                    {
+                        int totalCounterOfBytesToRead = completePackLength - firstTwoBytes.Length;
+
+                        byte[] remainingBytes = new byte[completePackLength - 2];
+                        int countOfBytesEffectivelyRead = 0;
+
+                        int portionLength = 0;
+                        int portionRemainingBytesToRead = totalCounterOfBytesToRead;
+
+                        while (portionRemainingBytesToRead > 0)
+                        {
+                            portionLength = serialPort.Read(remainingBytes, countOfBytesEffectivelyRead, portionRemainingBytesToRead);
+                            countOfBytesEffectivelyRead += portionLength;
+                            portionRemainingBytesToRead -= portionLength;
+                            Thread.Sleep(50);
+                        }
+
+                        if (countOfBytesEffectivelyRead == remainingBytes.Length)
+                        {
+                            byte[] completeFrame = new byte[completePackLength];
+                            Array.Copy(firstTwoBytes, 0, completeFrame, 0, firstTwoBytes.Length);
+                            Array.Copy(remainingBytes, 0, completeFrame, firstTwoBytes.Length, remainingBytes.Length);
+
+                            String stringa = "";
+                            int i = 0;
+                            for (i = 0; i < completeFrame.Length; i++)
+                            {
+                                completeFrame[i] = (byte)(~completeFrame[i]);
+                                stringa += completeFrame[i].ToString("X2") + " ";
+                            }
+
+                            //busEvent?.Invoke("PRINT_LOG", "[ " + stringa + "]");
+                            //busEvent?.Invoke("PRINT_LOG", Environment.NewLine);
+
+                            updateLightsIndicators(stringa);
+
+                        }
+                    }
+                }
+                Thread.Sleep(50);
+            }
+        }
+
+
+
+        // ==============================================================
+        // callback 
+
+        void dispatchToGui(string eventKey, string eventValue, MainForm form)
+        {
+            if (form.InvokeRequired) form.BeginInvoke(guiCallback, new object[] { eventKey, eventValue, form });
+            else guiCallback(eventKey, eventValue, form);
+
         }
 
 

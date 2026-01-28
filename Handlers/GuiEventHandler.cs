@@ -10,23 +10,8 @@ namespace AveBusManager
     internal class GuiEventHandler
     {
 
-        private MainForm mainForm;
-
-        public GuiEventHandler(MainForm mainForm) 
+        public static void guiUpdate(string eventKey, string eventValue, MainForm mainForm)
         {
-            this.mainForm = mainForm;
-        }
-
-
-
-        public void guiUpdate(string eventKey, string eventValue)
-        {
-
-            if (mainForm.InvokeRequired)
-            {
-                mainForm.BeginInvoke(new Action(() => guiUpdate(eventKey, eventValue)));
-                return;
-            }
 
             switch (eventKey)
             {
@@ -50,6 +35,8 @@ namespace AveBusManager
                     break;
             }
         }
+
+
 
     }
 }
