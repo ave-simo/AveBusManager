@@ -20,7 +20,7 @@ namespace AveBusManager
 
             updateGUI = guiUpdate;
 
-            aveBusController = new AveBusController(this);
+            aveBusController = new AveBusController();
             aveBusController.registerEventHandler(avebusEventHandler);
             defaultColor = this.BackColor;
             disableAllButtons();
